@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "893717346050",
+    "project_id": "app-project-random",
+    "storage_bucket": "app-project-random.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893717346050:android:50b35821a543dc9e86341b",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893717346050-1leapsq97t7betm34m9eqt7i0l1thru8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsoYbTtKrsyt6m8e3Cum7CWqVHvg78wsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893717346050-1leapsq97t7betm34m9eqt7i0l1thru8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "893717346050-hml9kl30q8n7qrtrcbd1002dt502e561.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.listaTarefasFirebase"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893717346050:android:65db0d94e22ef5ea86341b",
+        "android_client_info": {
+          "package_name": "com.example.lista_tarefas_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893717346050-1leapsq97t7betm34m9eqt7i0l1thru8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsoYbTtKrsyt6m8e3Cum7CWqVHvg78wsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893717346050-1leapsq97t7betm34m9eqt7i0l1thru8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "893717346050-hml9kl30q8n7qrtrcbd1002dt502e561.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.listaTarefasFirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
