@@ -41,10 +41,16 @@ class _CreatedTasksState extends State<CreatedTasks> {
               return const Text("Loading");
             }
 
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+            var newList = snapshot.data!.docs
+                .where((element) => element["finished"] == false)
+                .toList();
+
+            List<bool> checked =
+                List.generate(newList.length, (element) => false);
+
+            return ListView.builder(
+              itemCount: newList.length,
+              itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: SizedBox(
@@ -54,19 +60,28 @@ class _CreatedTasksState extends State<CreatedTasks> {
                         children: [
                           Expanded(
                             child: ListTile(
-                              title: Text(data['title']),
-                              subtitle: Text(data['description']),
+                              title: Text(newList[index]["title"]),
+                              subtitle: Text(newList[index]["description"]),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
-                              children: const [
+                              children: [
                                 Checkbox(
-                                  value: false,
-                                  onChanged: null,
+                                  value: checked[index],
+                                  onChanged: (value) {
+                                    
+                                    setState(() {
+                                      if (checked[index]) {
+                                        checked[index] = false;
+                                      } else {
+                                        checked[index] = true;
+                                      }
+                                    });
+                                  },
                                 ),
-                                Icon(Icons.delete_outline_outlined),
+                                const Icon(Icons.delete_outline_outlined),
                               ],
                             ),
                           )
@@ -75,7 +90,7 @@ class _CreatedTasksState extends State<CreatedTasks> {
                     ),
                   ),
                 );
-              }).toList(),
+              },
             );
           },
         ));

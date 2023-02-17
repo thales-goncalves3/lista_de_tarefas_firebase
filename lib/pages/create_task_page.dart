@@ -60,7 +60,7 @@ class _CreateTaskState extends State<CreateTask> {
                     final task = {
                       "title": title.text,
                       "description": description.text,
-                      "fishined": false,
+                      "finished": false,
                     };
 
                     db.collection(auth.currentUser!.uid.toString()).add(task);
