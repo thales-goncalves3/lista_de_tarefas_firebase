@@ -17,6 +17,9 @@ class _CreatedTasksState extends State<CreatedTasks> {
         .snapshots();
   }
 
+  final auth = FirebaseAuth.instance.currentUser!.uid;
+  final db = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,17 +74,22 @@ class _CreatedTasksState extends State<CreatedTasks> {
                                 Checkbox(
                                   value: checked[index],
                                   onChanged: (value) {
-                                    
-                                    setState(() {
-                                      if (checked[index]) {
-                                        checked[index] = false;
-                                      } else {
-                                        checked[index] = true;
-                                      }
+                                    db
+                                        .collection(auth)
+                                        .doc(newList[index].id)
+                                        .update({
+                                      'finished': true,
                                     });
                                   },
                                 ),
-                                const Icon(Icons.delete_outline_outlined),
+                                IconButton(
+                                    onPressed: () {
+                                      db
+                                          .collection(auth)
+                                          .doc(newList[index].id)
+                                          .delete();
+                                    },
+                                    icon: const Icon(Icons.delete)),
                               ],
                             ),
                           )
