@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +14,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   GlobalKey formKey = GlobalKey<FormState>();
+  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,27 +65,15 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    try {
-                      final credencial = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: email.text, password: password.text)
-                          .then((value) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                    final result =
+                        await controller.register(email.text, password.text);
+
+                    result == true
+                        ? ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text("User created with success.")));
-                      });
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'weak-password') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    "The password provided is too weak.")));
-                      } else if (e.code == "email-already-in-use") {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(
-                                "The account already exist for that email.")));
-                      }
-                    }
+                                content: Text("User created! Back to login")))
+                        : ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(result)));
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 import 'package:lista_tarefas_firebase/pages/create_task_page.dart';
 
 class CreatedTasks extends StatefulWidget {
@@ -17,8 +18,7 @@ class _CreatedTasksState extends State<CreatedTasks> {
         .snapshots();
   }
 
-  final auth = FirebaseAuth.instance.currentUser!.uid;
-  final db = FirebaseFirestore.instance;
+  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +44,14 @@ class _CreatedTasksState extends State<CreatedTasks> {
               return const Text("Loading");
             }
 
-            var newList = snapshot.data!.docs
+            final newList = snapshot.data!.docs
                 .where((element) => element["finished"] == false)
                 .toList();
 
             List<bool> checked =
                 List.generate(newList.length, (element) => false);
+
+            if (newList.isEmpty) return const Text("empty");
 
             return ListView.builder(
               itemCount: newList.length,
@@ -74,20 +76,13 @@ class _CreatedTasksState extends State<CreatedTasks> {
                                 Checkbox(
                                   value: checked[index],
                                   onChanged: (value) {
-                                    db
-                                        .collection(auth)
-                                        .doc(newList[index].id)
-                                        .update({
-                                      'finished': true,
-                                    });
+                                    controller.updateTask(
+                                        newList[index].id, {'finished': true});
                                   },
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      db
-                                          .collection(auth)
-                                          .doc(newList[index].id)
-                                          .delete();
+                                      controller.deleteTask(newList[index].id);
                                     },
                                     icon: const Icon(Icons.delete)),
                               ],

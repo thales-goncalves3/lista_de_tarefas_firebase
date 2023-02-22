@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 
 class CreateTask extends StatefulWidget {
   const CreateTask({super.key});
@@ -13,6 +12,8 @@ class _CreateTaskState extends State<CreateTask> {
   GlobalKey formKey = GlobalKey<FormState>();
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
+
+  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +55,7 @@ class _CreateTaskState extends State<CreateTask> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    FirebaseAuth auth = FirebaseAuth.instance;
-                    FirebaseFirestore db = FirebaseFirestore.instance;
-
-                    final task = {
-                      "title": title.text,
-                      "description": description.text,
-                      "finished": false,
-                    };
-
-                    db.collection(auth.currentUser!.uid.toString()).add(task);
+                    controller.createTask(title.text, description.text);
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),

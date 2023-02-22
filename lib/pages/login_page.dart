@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,10 +12,11 @@ class _LoginPageState extends State<LoginPage> {
   var obscure = true;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     GlobalKey formKey = GlobalKey<FormState>();
-
+    final controller = FirebaseController();
     return Scaffold(
       body: Center(
         child: Form(
@@ -63,25 +64,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    try {
-                      await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: email.text, password: password.text)
-                          .then((value) =>
-                              {Navigator.of(context).pushNamed("/home_page")});
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("No user found for that email.")));
-                      } else if (e.code == 'wrong-password') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    "Wrong password provided for that user.")));
-                      }
-                    }
+                    final login =
+                        await controller.login(email.text, password.text);
+
+                    login
+                        ? Navigator.of(context).pushNamed("/home_page")
+                        : ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(login)));
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),
