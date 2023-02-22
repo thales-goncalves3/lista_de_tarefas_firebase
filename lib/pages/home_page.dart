@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 import 'package:lista_tarefas_firebase/widgets/created_tasks.dart';
 
 import '../widgets/finished_tasks.dart';
@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,15 @@ class _HomePageState extends State<HomePage> {
           length: 2,
           child: Scaffold(
             appBar: AppBar(
-              title: Text("Welcome! ${_auth.currentUser!.email.toString()}"),
+              actions: [
+                IconButton(
+                    onPressed: (() {
+                      controller.signOut();
+                      Navigator.of(context).pushNamed("/login_page");
+                    }),
+                    icon: const Icon(Icons.exit_to_app)),
+              ],
+              title: Text("Welcome, ${controller.getEmail()}!"),
               bottom: const TabBar(
                   tabs: [Tab(text: "Criadas"), Tab(text: "Finalizadas")]),
             ),

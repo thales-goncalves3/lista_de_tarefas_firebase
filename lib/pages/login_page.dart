@@ -67,10 +67,26 @@ class _LoginPageState extends State<LoginPage> {
                     final login =
                         await controller.login(email.text, password.text);
 
-                    login
-                        ? Navigator.of(context).pushNamed("/home_page")
-                        : ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(login)));
+                    if (login == null) {
+                      Navigator.of(context).pushNamed("/home_page");
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Error"),
+                            content: Text(login),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("OK"))
+                            ],
+                          );
+                        },
+                      );
+                    }
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),

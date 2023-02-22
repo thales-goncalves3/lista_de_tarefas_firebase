@@ -1,21 +1,33 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lista_tarefas_firebase/pages/login_page.dart';
 
 class FirebaseController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  getUserId() {
+    return _auth.currentUser!.uid;
+  }
+
+  getUser() {
+    return _auth.currentUser;
+  }
+
+  getEmail() {
+    return _auth.currentUser!.email;
+  }
+
+  signOut() async {
+    await _auth.signOut();
+  }
+
   login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-      return true;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return "No user found for that email.";
-      } else if (e.code == 'wrong-password') {
-        return "Wrong password provided for that user.";
-      }
+      return e.message;
     }
   }
 
@@ -35,7 +47,7 @@ class FirebaseController {
   }
 
   createTask(String title, String description) {
-    _db.collection(_auth.currentUser!.uid.toString()).add({
+    _db.collection(getUserId()).add({
       "title": title,
       "description": description,
       "finished": false,
@@ -43,10 +55,10 @@ class FirebaseController {
   }
 
   deleteTask(String id) {
-    _db.collection(_auth.currentUser!.uid.toString()).doc(id).delete();
+    _db.collection(getUserId()).doc(id).delete();
   }
 
   updateTask(String id, Map<String, bool> map) {
-    _db.collection(_auth.currentUser!.uid.toString()).doc(id).update(map);
+    _db.collection(getUserId()).doc(id).update(map);
   }
 }

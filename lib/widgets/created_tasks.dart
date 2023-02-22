@@ -41,7 +41,7 @@ class _CreatedTasksState extends State<CreatedTasks> {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return const Center(child: CircularProgressIndicator());
             }
 
             final newList = snapshot.data!.docs
@@ -51,7 +51,7 @@ class _CreatedTasksState extends State<CreatedTasks> {
             List<bool> checked =
                 List.generate(newList.length, (element) => false);
 
-            if (newList.isEmpty) return const Text("empty");
+            if (newList.isEmpty) return const Center(child: Text("No tasks"));
 
             return ListView.builder(
               itemCount: newList.length,
@@ -65,7 +65,12 @@ class _CreatedTasksState extends State<CreatedTasks> {
                         children: [
                           Expanded(
                             child: ListTile(
-                              title: Text(newList[index]["title"]),
+                              title: Text(
+                                newList[index]["title"].toString(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               subtitle: Text(newList[index]["description"]),
                             ),
                           ),
@@ -84,7 +89,8 @@ class _CreatedTasksState extends State<CreatedTasks> {
                                     onPressed: () {
                                       controller.deleteTask(newList[index].id);
                                     },
-                                    icon: const Icon(Icons.delete)),
+                                    icon: const Icon(
+                                        Icons.delete_outline_outlined)),
                               ],
                             ),
                           )

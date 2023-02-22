@@ -9,7 +9,7 @@ class CreateTask extends StatefulWidget {
 }
 
 class _CreateTaskState extends State<CreateTask> {
-  GlobalKey formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey();
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
 
@@ -31,11 +31,18 @@ class _CreateTaskState extends State<CreateTask> {
                 child: Column(
                   children: [
                     TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: title,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: "Title",
                           hintText: "Title"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "This field can't be empty!";
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(
                       height: 5,
@@ -46,6 +53,12 @@ class _CreateTaskState extends State<CreateTask> {
                           border: OutlineInputBorder(),
                           labelText: "Description",
                           hintText: "Description"),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "This field can't be empty!";
+                        }
+                        return null;
+                      },
                     ),
                   ],
                 ),
@@ -55,7 +68,26 @@ class _CreateTaskState extends State<CreateTask> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    controller.createTask(title.text, description.text);
+                    if (formKey.currentState!.validate()) {
+                      controller.createTask(title.text, description.text);
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Success"),
+                            content: const Text("Task created with success!"),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamed("/home_page");
+                                  },
+                                  child: const Text("OK"))
+                            ],
+                          );
+                        },
+                      );
+                    }
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),

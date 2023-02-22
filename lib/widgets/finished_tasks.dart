@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 
 class FinishedTasks extends StatefulWidget {
   const FinishedTasks({super.key});
@@ -16,6 +17,8 @@ class _FinishedTasksState extends State<FinishedTasks> {
         .snapshots();
   }
 
+  final controller = FirebaseController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,49 +30,62 @@ class _FinishedTasksState extends State<FinishedTasks> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading");
+          return const Center(child: CircularProgressIndicator());
         }
 
-        return ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
+        final newList = snapshot.data!.docs
+            .where((element) => element["finished"] == true)
+            .toList();
 
-            return data["finished"] == true
-                ? Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: SizedBox(
-                      height: 100,
-                      child: Card(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ListTile(
-                                title: Text(data['title']),
-                                subtitle: Text(data["finished"].toString()),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Checkbox(
-                                    value: false,
-                                    onChanged: null,
-                                  ),
-                                  Icon(Icons.delete_outline_outlined),
-                                ],
-                              ),
-                            )
-                          ],
+        List<bool> checked = List.generate(newList.length, (element) => true);
+
+        if (newList.isEmpty) return const Center(child: Text("No tasks"));
+
+        return ListView.builder(
+          itemCount: newList.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SizedBox(
+                height: 100,
+                child: Card(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            newList[index]["title"],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(newList[index]["description"]),
                         ),
                       ),
-                    ),
-                  )
-                : Container(
-                    child: null,
-                  );
-          }).toList(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: checked[index],
+                              onChanged: (value) {
+                                controller.updateTask(
+                                    newList[index].id, {'finished': true});
+                              },
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  controller.deleteTask(newList[index].id);
+                                },
+                                icon:
+                                    const Icon(Icons.delete_outline_outlined)),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     ));
