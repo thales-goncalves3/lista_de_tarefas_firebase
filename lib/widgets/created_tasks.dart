@@ -87,7 +87,30 @@ class _CreatedTasksState extends State<CreatedTasks> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      controller.deleteTask(newList[index].id);
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text("Delete Task"),
+                                            content: const Text(
+                                                "Are you sure you want delete the task?"),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    controller.deleteTask(
+                                                        newList[index].id);
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text("YES")),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text("CANCEL"))
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                     icon: const Icon(
                                         Icons.delete_outline_outlined)),

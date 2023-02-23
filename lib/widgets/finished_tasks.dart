@@ -68,7 +68,7 @@ class _FinishedTasksState extends State<FinishedTasks> {
                               value: checked[index],
                               onChanged: (value) {
                                 controller.updateTask(
-                                    newList[index].id, {'finished': true});
+                                    newList[index].id, {'finished': false});
                               },
                             ),
                             IconButton(
