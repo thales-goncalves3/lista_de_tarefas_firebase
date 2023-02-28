@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
+import 'package:string_validator/string_validator.dart' as validator;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -11,9 +11,17 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool obscure = true;
+  bool obscureConfirm = true;
+
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  GlobalKey formKey = GlobalKey<FormState>();
+  TextEditingController username = TextEditingController();
+  TextEditingController passwordConfirm = TextEditingController();
+
+  String passwordChanged = "";
+  String passwordChangedConfirm = "";
+
+  GlobalKey<FormState> formKey = GlobalKey();
   final controller = FirebaseController();
 
   @override
@@ -29,23 +37,74 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: email,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "this field is required";
+                        }
+
+                        if (value.length < 6) {
+                          return "the username must have 6 or more digits";
+                        }
+
+                        return null;
+                      },
+                      controller: username,
                       decoration: const InputDecoration(
+                        hintText: "Type your Username",
+                        labelText: "Username",
+                        prefixIcon: Icon(Icons.person),
                         border: OutlineInputBorder(),
-                        hintText: "Email",
-                        labelText: "Email",
                       ),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     TextFormField(
+                      controller: email,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.mail),
+                        hintText: "Type your Email",
+                        labelText: "Email",
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "this field is required";
+                        }
+
+                        if (!validator.isEmail(value)) {
+                          return "this field must be email type";
+                        }
+
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: password,
                       obscureText: obscure,
+                      validator: (password) {
+                        if (password == null || password.isEmpty) {
+                          return "this field is required";
+                        }
+
+                        if (password.length < 8) {
+                          return "the password must have 8 or more digits ";
+                        }
+
+                        return null;
+                      },
+                      onChanged: (value) => passwordChanged = value,
                       decoration: InputDecoration(
                           border: const OutlineInputBorder(),
-                          hintText: "Senha",
-                          labelText: "Senha",
+                          prefixIcon: const Icon(Icons.lock),
+                          hintText: "Type your Password",
+                          labelText: "Password",
                           suffixIcon: IconButton(
                             icon: Icon(obscure
                                 ? Icons.visibility_off
@@ -53,6 +112,45 @@ class _RegisterPageState extends State<RegisterPage> {
                             onPressed: () {
                               setState(() {
                                 obscure = !obscure;
+                              });
+                            },
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      controller: passwordConfirm,
+                      onChanged: (value) => passwordChangedConfirm = value,
+                      validator: (passwordConfirm) {
+                        if (passwordConfirm == null ||
+                            passwordConfirm.isEmpty) {
+                          return "this field is required";
+                        }
+
+                        if (passwordConfirm.length < 8) {
+                          return "the password must have 8 or more digits ";
+                        }
+
+                        if (passwordChanged != passwordChangedConfirm) {
+                          return "the passwords must be equal";
+                        }
+                        return null;
+                      },
+                      obscureText: obscureConfirm,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          hintText: "Confirm your Password",
+                          labelText: "Password",
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(obscureConfirm
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(() {
+                                obscureConfirm = !obscureConfirm;
                               });
                             },
                           )),
@@ -65,15 +163,17 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    final result =
-                        await controller.register(email.text, password.text);
+                    if (formKey.currentState!.validate()) {
+                      final result =
+                          await controller.register(email.text, password.text);
 
-                    result == true
-                        ? ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("User created! Back to login")))
-                        : ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(result)));
+                      result == true
+                          ? ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("User created! Back to login")))
+                          : ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(result)));
+                    }
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(10.0),
