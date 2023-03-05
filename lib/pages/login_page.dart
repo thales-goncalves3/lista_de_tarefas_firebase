@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
+
+import '../controllers/auth_controller.dart';
+import '../controllers/database_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     GlobalKey formKey = GlobalKey<FormState>();
-    final controller = FirebaseController();
     return Scaffold(
       body: Center(
         child: Form(
@@ -65,11 +66,13 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                   onPressed: () async {
                     final login =
-                        await controller.login(email.text, password.text);
+                        await AuthController.login(email.text, password.text);
 
                     if (login == null) {
+                      // ignore: use_build_context_synchronously
                       Navigator.of(context).pushNamed("/home_page");
                     } else {
+                      // ignore: use_build_context_synchronously
                       showDialog(
                         context: context,
                         builder: (context) {

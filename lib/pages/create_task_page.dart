@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
+
+import 'package:lista_tarefas_firebase/controllers/database_controller.dart';
 
 class CreateTask extends StatefulWidget {
   const CreateTask({super.key});
@@ -12,8 +13,6 @@ class _CreateTaskState extends State<CreateTask> {
   GlobalKey<FormState> formKey = GlobalKey();
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
-
-  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +68,8 @@ class _CreateTaskState extends State<CreateTask> {
               ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      controller.createTask(title.text, description.text);
+                      DatabaseController.createTask(
+                          title.text, description.text);
                       showDialog(
                         context: context,
                         builder: (context) {

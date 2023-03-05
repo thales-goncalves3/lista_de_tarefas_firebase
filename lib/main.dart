@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 import 'package:lista_tarefas_firebase/firebase_options.dart';
-import 'package:lista_tarefas_firebase/pages/home_page.dart';
 
 import 'package:lista_tarefas_firebase/pages/login_page.dart';
 import 'package:lista_tarefas_firebase/routes/routes.dart';
@@ -15,14 +13,12 @@ void main() async {
   );
 
   runApp(
-    MyApp(),
+    const MyApp(),
   );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final controller = FirebaseController();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: controller.getUser() == null ? const LoginPage() : const HomePage(),
+      home: const LoginPage(),
     );
   }
 }

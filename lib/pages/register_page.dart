@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
+
 import 'package:string_validator/string_validator.dart' as validator;
+
+import '../controllers/auth_controller.dart';
+import '../controllers/database_controller.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -22,7 +25,6 @@ class _RegisterPageState extends State<RegisterPage> {
   String passwordChangedConfirm = "";
 
   GlobalKey<FormState> formKey = GlobalKey();
-  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -164,15 +166,21 @@ class _RegisterPageState extends State<RegisterPage> {
               ElevatedButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      final result =
-                          await controller.register(email.text, password.text);
+                      final result = await AuthController.register(
+                          email.text, password.text, username.text);
 
-                      result == true
-                          ? ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("User created! Back to login")))
-                          : ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text(result)));
+                      if (result) {
+                        DatabaseController.createUser(
+                            username.text, email.text);
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("User created! Back to login")));
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(result)));
+                      }
                     }
                   },
                   child: const Padding(

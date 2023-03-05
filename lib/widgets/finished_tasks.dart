@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
+import 'package:lista_tarefas_firebase/controllers/database_controller.dart';
 
 class FinishedTasks extends StatefulWidget {
   const FinishedTasks({super.key});
@@ -16,8 +16,6 @@ class _FinishedTasksState extends State<FinishedTasks> {
         .collection(FirebaseAuth.instance.currentUser!.uid.toString())
         .snapshots();
   }
-
-  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +65,14 @@ class _FinishedTasksState extends State<FinishedTasks> {
                             Checkbox(
                               value: checked[index],
                               onChanged: (value) {
-                                controller.updateTask(
+                                DatabaseController.updateTask(
                                     newList[index].id, {'finished': false});
                               },
                             ),
                             IconButton(
                                 onPressed: () {
-                                  controller.deleteTask(newList[index].id);
+                                  DatabaseController.deleteTask(
+                                      newList[index].id);
                                 },
                                 icon:
                                     const Icon(Icons.delete_outline_outlined)),

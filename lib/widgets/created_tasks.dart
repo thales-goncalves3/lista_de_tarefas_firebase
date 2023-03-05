@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
+import 'package:lista_tarefas_firebase/controllers/database_controller.dart';
+
 import 'package:lista_tarefas_firebase/pages/create_task_page.dart';
 
 class CreatedTasks extends StatefulWidget {
@@ -17,8 +18,6 @@ class _CreatedTasksState extends State<CreatedTasks> {
         .collection(FirebaseAuth.instance.currentUser!.uid.toString())
         .snapshots();
   }
-
-  final controller = FirebaseController();
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +80,7 @@ class _CreatedTasksState extends State<CreatedTasks> {
                                 Checkbox(
                                   value: checked[index],
                                   onChanged: (value) {
-                                    controller.updateTask(
+                                    DatabaseController.updateTask(
                                         newList[index].id, {'finished': true});
                                   },
                                 ),
@@ -97,8 +96,9 @@ class _CreatedTasksState extends State<CreatedTasks> {
                                             actions: [
                                               TextButton(
                                                   onPressed: () {
-                                                    controller.deleteTask(
-                                                        newList[index].id);
+                                                    DatabaseController
+                                                        .deleteTask(
+                                                            newList[index].id);
                                                     Navigator.of(context).pop();
                                                   },
                                                   child: const Text("YES")),

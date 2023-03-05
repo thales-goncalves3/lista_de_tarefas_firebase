@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lista_tarefas_firebase/controllers/firebase_controller.dart';
 import 'package:lista_tarefas_firebase/widgets/created_tasks.dart';
 
+import '../controllers/auth_controller.dart';
+
+import '../controllers/database_controller.dart';
 import '../widgets/finished_tasks.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,8 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = FirebaseController();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,12 +25,12 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 IconButton(
                     onPressed: (() {
-                      controller.signOut();
+                      AuthController.signOut();
                       Navigator.of(context).pushNamed("/login_page");
                     }),
                     icon: const Icon(Icons.exit_to_app)),
               ],
-              title: Text("Welcome, ${controller.getEmail()}!"),
+              title: Text("Welcome, ${DatabaseController.getData()}!"),
               bottom: const TabBar(
                   tabs: [Tab(text: "Criadas"), Tab(text: "Finalizadas")]),
             ),
