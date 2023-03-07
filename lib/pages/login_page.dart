@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_firebase/pages/home_page.dart';
+import 'package:lista_tarefas_firebase/pages/register_page.dart';
 
 import '../controllers/auth_controller.dart';
-import '../controllers/database_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -70,7 +71,11 @@ class _LoginPageState extends State<LoginPage> {
 
                     if (login == null) {
                       // ignore: use_build_context_synchronously
-                      Navigator.of(context).pushNamed("/home_page");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ));
                     } else {
                       // ignore: use_build_context_synchronously
                       showDialog(
@@ -100,7 +105,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed("/register_page");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ));
                   },
                   child: const Text("Não tem cadastro? Cadastrar")),
             ],

@@ -6,15 +6,12 @@ class DatabaseController {
 
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  static getData() async {
-    final data = _db
+  static Stream<QuerySnapshot> getData() {
+    return FirebaseFirestore.instance
         .collection("users")
         .doc(AuthController.getUserId())
-        .collection("infos");
-
-    final query = await data.get();
-
-    return query;
+        .collection("tasks")
+        .snapshots();
   }
 
   static createUser(String username, String email) {

@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:lista_tarefas_firebase/controllers/database_controller.dart';
 
 import 'package:lista_tarefas_firebase/pages/create_task_page.dart';
+
+import '../controllers/auth_controller.dart';
 
 class CreatedTasks extends StatefulWidget {
   const CreatedTasks({super.key});
@@ -13,12 +15,6 @@ class CreatedTasks extends StatefulWidget {
 }
 
 class _CreatedTasksState extends State<CreatedTasks> {
-  Stream<QuerySnapshot> _getData() {
-    return FirebaseFirestore.instance
-        .collection(FirebaseAuth.instance.currentUser!.uid.toString())
-        .snapshots();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +29,7 @@ class _CreatedTasksState extends State<CreatedTasks> {
           child: const Icon(Icons.add),
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: _getData(),
+          stream: DatabaseController.getData(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasError) {
               return const Text('Something went wrong');
