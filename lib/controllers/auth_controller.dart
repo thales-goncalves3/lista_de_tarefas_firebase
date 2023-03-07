@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lista_tarefas_firebase/controllers/database_controller.dart';
 
 class AuthController {
   AuthController._();

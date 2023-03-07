@@ -14,6 +14,14 @@ class DatabaseController {
         .snapshots();
   }
 
+  static Stream<QuerySnapshot> getUser() {
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(AuthController.getUserId())
+        .collection("infos")
+        .snapshots();
+  }
+
   static createUser(String username, String email) {
     _db
         .collection("users")
